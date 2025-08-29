@@ -148,6 +148,8 @@ def build_blocks(results: list[dict], date_label: str) -> list:
             fields_md.append(f"*{k}:* {_fmt_value(k, v)}")
         if fields_md:
             section_text += "\n" + "\n".join(fields_md)
+        if status:
+            section_text += f"\n{status}"
         blocks.append({"type": "section", "text": {"type": "mrkdwn", "text": section_text}})
         blocks.append({"type": "divider"})
     return blocks
