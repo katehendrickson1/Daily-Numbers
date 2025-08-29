@@ -1,41 +1,24 @@
-name: Daily Sheets to Slack
+name: Daily Slack
 
 on:
+  workflow_dispatch: # lets you trigger it manually
   schedule:
-    - cron: "5 14 * * *" # 08:05 America/Denver during Daylight Saving (adjust if needed)
-  workflow_dispatch:
+    - cron: "15 16 * * *" # 9:15 AM Central (adjust below if needed)
 
 jobs:
-  run:
+  run-daily:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (empty repo is fine)
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-        working-directory: .
-
-      - name: Write script and requirements
-        run: |
-          echo "$PY_SCRIPT" > daily_sheets_to_slack.py
-          echo "$REQS" > requirements.txt
-        env:
-          PY_SCRIPT: ${{ secrets.PY_SCRIPT }}
-          REQS: ${{ secrets.REQS }}
-
-      - name: Run
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run script
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
           SHEETS_CONFIG_JSON: ${{ secrets.SHEETS_CONFIG_JSON }}
-        run: python daily_sheets_to_slack.py
+        run: python dailynumbers.py
