@@ -1,0 +1,9 @@
+@"
+.env
+config.json
+service_account.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+"@ | Out-File -Encoding utf8 .gitignore
